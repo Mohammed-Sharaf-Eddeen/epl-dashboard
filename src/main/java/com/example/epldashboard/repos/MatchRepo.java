@@ -13,17 +13,23 @@ import java.util.List;
 @Repository
 public interface MatchRepo extends CrudRepository<Match, Long> {
 
-    @Override
-    List<Match> findAll();
+    List<Match> findAllByHomeTeamAndSeason(String teamTitle, String season);
 
-    List<Match> findAllByHomeTeam(String teamTitle);
+    List<Match> findAllByAwayTeamAndSeason(String teamTitle, String season);
 
-    List<Match> findAllByAwayTeam(String teamTitle);
+    List<Match> findByHomeTeamOrAwayTeamOrderByDateDesc(String homeTeam, String awayTeam, Pageable pageable);
+
+    List<Match> findByHomeTeamAndSeasonOrAwayTeamAndSeasonOrderByDateDesc(
+            String homeTeam, String season1, String awayTeam, String season2, Pageable pageable);
+
+
+
 
     @Query("SELECT DISTINCT m.homeTeam FROM Match m")
     List<String> findAllTeamTitles();
 
-    List<Match> findByHomeTeamOrAwayTeamOrderByDateDesc(String homeTeam, String awayTeam, Pageable pageable);
+    @Query("SELECT DISTINCT m.season FROM Match m")
+    List<String> findAllSeasons();
 
     /*
         Previously, this was used to be done in a Data Access Object (DAO), but now, it is better to be done here
@@ -34,9 +40,7 @@ public interface MatchRepo extends CrudRepository<Match, Long> {
         return findByHomeTeamOrAwayTeamOrderByDateDesc(teamTitle, teamTitle, pageable);
     }
 
-    default List<Match> findTeamAllMatches(String teamTitle) {
-        // 19 is all matches per season
-        Pageable pageable = PageRequest.of(0, 19);
-        return findByHomeTeamOrAwayTeamOrderByDateDesc(teamTitle, teamTitle, pageable);
+    default List<Match> findTeamAllMatchesDuringSeason(String teamTitle, String season) {
+        return findByHomeTeamAndSeasonOrAwayTeamAndSeasonOrderByDateDesc(teamTitle, season, teamTitle, season, Pageable.unpaged());
     }
 }

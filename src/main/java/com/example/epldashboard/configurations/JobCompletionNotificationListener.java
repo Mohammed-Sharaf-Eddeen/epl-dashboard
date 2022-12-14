@@ -30,20 +30,27 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
     @Override
     public void afterJob(JobExecution jobExecution) {
         if(jobExecution.getStatus() == BatchStatus.COMPLETED) {
-            log.info("*** JOB FINISHED ***");
+            log.info("*** Importing Matches FINISHED ***");
 
             List<String> teamsTitles = matchRepo.findAllTeamTitles();
-            teamsTitles.forEach(this::populateTeamsTable);
+            List<String> seasons = matchRepo.findAllSeasons();
+            seasons.forEach(
+                    season -> teamsTitles.forEach(
+                            teamTitle -> populateTeamsTable(teamTitle, season)
+                    )
+            );
 
+            log.info("*** Generating Teams Data FINISHED ***");
         }
     }
 
-    private void populateTeamsTable(String teamTitle) {
+    private void populateTeamsTable(String teamTitle, String season) {
         Team team = new Team();
         team.setTitle(teamTitle);
+        team.setSeason(season);
 
         // Home Matches
-        List<Match> homeMatches = matchRepo.findAllByHomeTeam(teamTitle);
+        List<Match> homeMatches = matchRepo.findAllByHomeTeamAndSeason(teamTitle, season);
         int homeWins = (int) homeMatches.stream().filter(match -> match.getHomeGoals() > match.getAwayGoals()).count();
         int homeLosses = (int) homeMatches.stream().filter(match -> match.getHomeGoals() < match.getAwayGoals()).count();
         int homeDraws = (int) homeMatches.stream().filter(match -> match.getHomeGoals() == match.getAwayGoals()).count();
@@ -53,7 +60,7 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
         team.setHomeDraws(homeDraws);
 
         // Away Matches
-        List<Match> awayMatches = matchRepo.findAllByAwayTeam(teamTitle);
+        List<Match> awayMatches = matchRepo.findAllByAwayTeamAndSeason(teamTitle, season);
         int awayWins = (int) awayMatches.stream().filter(match -> match.getAwayGoals() > match.getHomeGoals()).count();
         int awayLosses = (int) awayMatches.stream().filter(match -> match.getAwayGoals() < match.getHomeGoals()).count();
         int awayDraws = (int) awayMatches.stream().filter(match -> match.getAwayGoals() == match.getHomeGoals()).count();

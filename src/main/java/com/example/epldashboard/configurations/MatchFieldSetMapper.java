@@ -7,8 +7,14 @@ import org.springframework.validation.BindException;
 import java.time.LocalDate;
 
 public class MatchFieldSetMapper implements org.springframework.batch.item.file.mapping.FieldSetMapper<Match> {
+
+    private String season;
+
+    public void setSeason(String season) {
+        this.season = season;
+    }
     @Override
-    public Match mapFieldSet(FieldSet fieldSet) throws BindException {
+    public Match mapFieldSet(FieldSet fieldSet) {
         Match match = new Match();
 
         // Map each token to its respective field in the Match object
@@ -19,6 +25,10 @@ public class MatchFieldSetMapper implements org.springframework.batch.item.file.
         match.setHomeGoals(fieldSet.readInt(5));
         match.setAwayGoals(fieldSet.readInt(6));
         match.setReferee(fieldSet.readString(11));
+
+        // This is a generated token, not included in CSV data,
+        // but pulled from the name of the csv resource to indicate the season
+        match.setSeason(season);
 
         return match;
     }

@@ -26,9 +26,9 @@ public class TeamsController {
         this.matchRepo = matchRepo;
     }
 
-    @GetMapping("/teams/{teamTitle}")
-    public Team getTeamData(@PathVariable String teamTitle) {
-        Optional<Team> teamOptional = teamRepo.findById(teamTitle);
+    @GetMapping("/teams/{teamTitle}/{season}")
+    public Team getTeamData(@PathVariable String teamTitle, @PathVariable String season) {
+        Optional<Team> teamOptional = teamRepo.findByTitleAndSeason(teamTitle, season);
         if (teamOptional.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team Not Found");
         }
@@ -39,8 +39,8 @@ public class TeamsController {
         return team;
     }
 
-    @GetMapping("/teams/{teamTitle}/matches")
-    public List<Match> getAllMatchesForTeam(@PathVariable String teamTitle) {
-        return matchRepo.findTeamAllMatches(teamTitle);
+    @GetMapping("/matches/{teamTitle}/{season}")
+    public List<Match> getAllMatchesForTeam(@PathVariable String teamTitle, @PathVariable String season) {
+        return matchRepo.findTeamAllMatchesDuringSeason(teamTitle, season);
     }
 }

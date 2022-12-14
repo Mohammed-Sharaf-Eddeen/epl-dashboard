@@ -4,10 +4,9 @@ import com.example.epldashboard.models.Team;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface TeamRepo extends CrudRepository<Team, String> {
 
-    @Override
-    List<Team> findAll();
-
+    Optional<Team> findByTitleAndSeason(String title, String season);
 }

@@ -7,7 +7,6 @@ import java.time.LocalDate;
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", nullable = false)
     private Long id;
 
     private LocalDate date;
@@ -17,11 +16,12 @@ public class Match {
     private int homeGoals;
     private int awayGoals;
     private String referee;
+    private String season;
 
     public Match() {
     }
 
-    public Match(Long id, LocalDate date, String time, String homeTeam, String awayTeam, int homeGoals, int awayGoals, String referee) {
+    public Match(Long id, LocalDate date, String time, String homeTeam, String awayTeam, int homeGoals, int awayGoals, String referee, String season) {
         this.id = id;
         this.date = date;
         this.time = time;
@@ -30,6 +30,7 @@ public class Match {
         this.homeGoals = homeGoals;
         this.awayGoals = awayGoals;
         this.referee = referee;
+        this.season = season;
     }
 
     public Long getId() {
@@ -94,5 +95,13 @@ public class Match {
 
     public void setReferee(String referee) {
         this.referee = referee;
+    }
+
+    public String getSeason() {
+        return season;
+    }
+
+    public void setSeason(String season) {
+        this.season = season;
     }
 }

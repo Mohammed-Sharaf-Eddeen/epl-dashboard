@@ -6,6 +6,9 @@ import java.util.List;
 @Entity
 public class Team {
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
     private String title;
 
     private int homeWins;
@@ -16,13 +19,24 @@ public class Team {
     private int awayLosses;
     private int awayDraws;
 
+    private String season;
+
+
     @Transient
     private List<Match> latestMatches;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Team() {
     }
 
-    public Team(String title, int homeWins, int homeLosses, int homeDraws, int awayWins, int awayLosses, int awayDraws, List<Match> latestMatches) {
+    public Team(String title, int homeWins, int homeLosses, int homeDraws, int awayWins, int awayLosses, int awayDraws, List<Match> latestMatches, String season) {
         this.title = title;
         this.homeWins = homeWins;
         this.homeLosses = homeLosses;
@@ -31,6 +45,7 @@ public class Team {
         this.awayLosses = awayLosses;
         this.awayDraws = awayDraws;
         this.latestMatches = latestMatches;
+        this.season = season;
     }
 
     public String getTitle() {
@@ -108,6 +123,14 @@ public class Team {
 
     public void setLatestMatches(List<Match> latestMatches) {
         this.latestMatches = latestMatches;
+    }
+
+    public String getSeason() {
+        return season;
+    }
+
+    public void setSeason(String season) {
+        this.season = season;
     }
 }
 

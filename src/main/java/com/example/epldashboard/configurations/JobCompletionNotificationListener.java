@@ -33,7 +33,7 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
             log.info("*** Importing Matches FINISHED ***");
 
             List<String> teamsTitles = matchRepo.findAllTeamTitles();
-            List<String> seasons = matchRepo.findAllSeasons();
+            List<String> seasons = matchRepo.findAllSeasonsForAllTeams();
             seasons.forEach(
                     season -> teamsTitles.forEach(
                             teamTitle -> populateTeamsTable(teamTitle, season)
@@ -48,6 +48,11 @@ public class JobCompletionNotificationListener extends JobExecutionListenerSuppo
         Team team = new Team();
         team.setTitle(teamTitle);
         team.setSeason(season);
+
+        // Check to see whether this team's matches exist. If they don't exist, it means the team has been delegated.
+        if (matchRepo.findAllByHomeTeamAndSeason(teamTitle, season).isEmpty()) {
+            return;
+        }
 
         // Home Matches
         List<Match> homeMatches = matchRepo.findAllByHomeTeamAndSeason(teamTitle, season);

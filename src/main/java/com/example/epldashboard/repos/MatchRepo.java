@@ -24,12 +24,12 @@ public interface MatchRepo extends CrudRepository<Match, Long> {
 
 
 
-
     @Query("SELECT DISTINCT m.homeTeam FROM Match m")
     List<String> findAllTeamTitles();
 
     @Query("SELECT DISTINCT m.season FROM Match m")
-    List<String> findAllSeasons();
+    List<String> findAllSeasonsForAllTeams();
+
 
     /*
         Previously, this was used to be done in a Data Access Object (DAO), but now, it is better to be done here

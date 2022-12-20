@@ -16,12 +16,12 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
-public class TeamsController {
+public class GeneralController {
 
     private final TeamRepo teamRepo;
     private final MatchRepo matchRepo;
 
-    public TeamsController(TeamRepo teamRepo, MatchRepo matchRepo) {
+    public GeneralController(TeamRepo teamRepo, MatchRepo matchRepo) {
         this.teamRepo = teamRepo;
         this.matchRepo = matchRepo;
     }
@@ -42,5 +42,10 @@ public class TeamsController {
     @GetMapping("/matches/{teamTitle}/{season}")
     public List<Match> getAllMatchesForTeam(@PathVariable String teamTitle, @PathVariable String season) {
         return matchRepo.findTeamAllMatchesDuringSeason(teamTitle, season);
+    }
+
+    @GetMapping("/seasons/{teamTitle}")
+    public List<String> getAllSeasons(@PathVariable String teamTitle) {
+        return teamRepo.findAllSeasonsForOneTeam(teamTitle);
     }
 }
